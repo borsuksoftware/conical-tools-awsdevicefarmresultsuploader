@@ -1,0 +1,2 @@
+# conical-tools-awsdevicefarmresultsuploader
+Source code for BorsukSoftware.Conical.Tools.AWSDeviceFarmResultsUploader
