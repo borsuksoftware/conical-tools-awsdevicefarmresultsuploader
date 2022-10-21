@@ -8,6 +8,7 @@
 		<Copyright>Borsuk Software</Copyright>
 		<PackageTags>borsuksoftware;conical;aws;devicefarm;awsdevicefarm</PackageTags>
 		<PackAsTool>True</PackAsTool>
+		<PackageIcon>conical.png</PackageIcon>
 	</PropertyGroup>
 
   <ItemGroup>
