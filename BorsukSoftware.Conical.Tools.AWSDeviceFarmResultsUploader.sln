@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BorsukSoftware.Conical.Tools.AWSDeviceFarmResultsUploader", "BorsukSoftware.Conical.Tools.AWSDeviceFarmResultsUploader\BorsukSoftware.Conical.Tools.AWSDeviceFarmResultsUploader.csproj", "{58A8A85A-B3A7-4799-AB83-9BE08FB8FCC7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58A8A85A-B3A7-4799-AB83-9BE08FB8FCC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58A8A85A-B3A7-4799-AB83-9BE08FB8FCC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58A8A85A-B3A7-4799-AB83-9BE08FB8FCC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58A8A85A-B3A7-4799-AB83-9BE08FB8FCC7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BC1520E2-096D-4E8E-855B-0273395FA361}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Authors>BorsukSoftware</Authors>
+		<Copyright>Borsuk Software</Copyright>
+		<PackageTags>borsuksoftware;conical;aws;devicefarm;awsdevicefarm</PackageTags>
+		<PackAsTool>True</PackAsTool>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\conical.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BorsukSoftware.Utils.Pytest" Version="1.0.0.2" />
+		<PackageReference Include="BorsukSoftware.Conical.Client" Version="1.0.0.67" />
+		<PackageReference Include="AWSSDK.DeviceFarm" Version="3.7.2.6" />
+		<PackageReference Include="AWSSDK.S3" Version="3.7.9.63" />
+	</ItemGroup>
+
+</Project>
