@@ -26,7 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BorsukSoftware.Utils.Pytest" Version="1.0.0.2" />
+		<PackageReference Include="BorsukSoftware.Utils.Pytest" Version="1.0.0.5" />
 		<PackageReference Include="BorsukSoftware.Conical.Client" Version="1.0.0.67" />
 		<PackageReference Include="AWSSDK.DeviceFarm" Version="3.7.2.6" />
 		<PackageReference Include="AWSSDK.S3" Version="3.7.9.63" />
