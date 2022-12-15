@@ -32,8 +32,7 @@ Support uploading multiple AWS device farm jobs in a single ES. This would be us
 Once the tool has been installed, it can be run with:
 
 ```
-dotnet tool run BorsukSoftware.Conical.Tools.AWSDeviceFarmResultsUploader
-
+dotnet tool run BorsukSoftware.Conical.Tools.AWSDeviceFarmResultsUploader `
   -server "https://demo.conical.cloud" `
   -token "itsNotOurTokenDontEvenBother:)" `
   -product "AWS-Testing" `

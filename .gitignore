@@ -6,3 +6,5 @@
 /BorsukSoftware.Conical.Tools.AWSDeviceFarmResultsUploader/.vs
 /BorsukSoftware.Conical.Tools.AWSDeviceFarmResultsUploader/bin
 /BorsukSoftware.Conical.Tools.AWSDeviceFarmResultsUploader/obj
+/Tests/bin
+/Tests/obj

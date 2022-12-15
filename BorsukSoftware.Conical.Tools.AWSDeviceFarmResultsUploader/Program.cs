@@ -65,6 +65,9 @@ The following tokens are available (case insensitive):
  job.device.platform        The platform (e.g. Android / iOS)
  job.name                   
  job.result
+
+General:
+ -useNonZeroExitCodeOnTestFailure   If specified, and any test within the ES is marked as failure or exception, then a non-zero exit code will be used
  
 
 Others:
@@ -83,6 +86,7 @@ Others:
             string evidenceSetName = null, evidenceSetDescription = null, evidenceSetRefDateStr = null, evidenceSetRefDateFormatStr = null, evidenceSetTestRunSetPrefix = null;
             var testRunSetTags = new List<string>();
             var evidenceSetTags = new List<string>();
+            bool useNonZeroExitCodeOnTestFailure = false;
             for (int i = 0; i < args.Length; ++i)
             {
                 switch (args[i].ToLower())
@@ -157,6 +161,10 @@ Others:
                         awsTestRunName = args[++i];
                         break;
 
+                    case "-usenonzeroexitcodeontestfailure":
+                        useNonZeroExitCodeOnTestFailure = true;
+                        break;
+
                     /* Infrastructural parameters */
                     case "--help":
                         Console.WriteLine(CONST_HELPTEXT);
@@ -171,7 +179,7 @@ Others:
             }
 
             /** Check inputs (Conical) **/
-            if( string.IsNullOrEmpty(conicalServer))
+            if (string.IsNullOrEmpty(conicalServer))
             {
                 Console.WriteLine("No Conical server specified");
                 return 1;
@@ -191,14 +199,14 @@ Others:
                 return 1;
             }
 
-            if( string.IsNullOrEmpty( testRunSetName))
+            if (string.IsNullOrEmpty(testRunSetName))
             {
                 Console.WriteLine("A valid test run set name must be specified");
                 return 1;
             }
 
             /** Handle ES values  **/
-            if ( string.IsNullOrEmpty( evidenceSetName))
+            if (string.IsNullOrEmpty(evidenceSetName))
             {
                 Console.WriteLine("A valid evidence set name must be specified");
                 return 1;
@@ -331,14 +339,14 @@ Others:
             {
                 product = await client.GetProduct(conicalProduct);
             }
-            catch( Exception ex )
+            catch (Exception ex)
             {
                 Console.WriteLine($"Unable to source product from the Conical server - {ex}");
                 return 1;
             }
 
             var sources = new List<(string Prefix, string Product, int TestRunSetID, Client.EvidenceSetTestRunSelectionMode TestRunSelectionMode, IReadOnlyCollection<int> testRunIDs)>();
-            foreach( var job in jobs.Jobs)
+            foreach (var job in jobs.Jobs)
             {
                 Console.WriteLine($" Job - {job.Name} ({@job.Device.Name}): {job.Result}");
                 Console.WriteLine($"  Device: {job.Device.Platform} / {job.Device.Os} / {job.Device.Model} / {job.Device.FormFactor}");
@@ -346,14 +354,14 @@ Others:
                 var trsName = testRunSetName;
                 var trsDescription = testRunSetDescription;
                 if (!string.IsNullOrEmpty(trsName))
-                    trsName= ProcessString(trsName, job);
+                    trsName = ProcessString(trsName, job);
                 if (!string.IsNullOrEmpty(trsDescription))
                     trsDescription = ProcessString(trsDescription, job);
 
                 var tagsArray = testRunSetTags.Select(t => ProcessString(t, job)).ToArray();
-                var trs = await product.CreateTestRunSet(trsName, 
-                    trsDescription, 
-                    trsRefDate, 
+                var trs = await product.CreateTestRunSet(trsName,
+                    trsDescription,
+                    trsRefDate,
                     tagsArray);
 
                 await trs.PublishExternalLinks(new[] { new Client.ExternalLink("AWS Job", testRunFullUrl, "AWS Job for the whole set") });
@@ -380,7 +388,7 @@ Others:
                 bool potentiallyIncompleteResults =
                     testsSuite.Result == ExecutionResult.ERRORED ||
                     testsSuite.Result == ExecutionResult.STOPPED;
-                if( potentiallyIncompleteResults )
+                if (potentiallyIncompleteResults)
                 {
                     Console.WriteLine("   => Potentially incomplete results, adding additional test run 'General'");
 
@@ -526,8 +534,26 @@ Others:
                 new[] { (name: "AWS Job", Url: testRunFullUrl, Description: "AWS Job for the whole set") },
                 Client.EvidenceSetTestMultipleSourceTestRunsBehaviour.NotAllowed,
                 sources);
-            
+
             Console.WriteLine($" => #{es.ID}");
+
+            if (useNonZeroExitCodeOnTestFailure)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Operating in useNonZeroExitCodeOnTestFailure");
+                Console.WriteLine(" => checking evidence set");
+
+                Console.WriteLine($" => Successful tests: {es.SuccessfulTests}");
+                Console.WriteLine($" => Failed tests: {es.FailedTests}");
+                Console.WriteLine($" => Erroring tests: {es.ErroringTests}");
+
+                if (es.FailedTests > 0 || es.ErroringTests > 0)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(" => failing with exit code of 2");
+                    return 2;
+                }
+            }
 
             return 0;
         }
@@ -551,30 +577,30 @@ Others:
 
         #region Text Replacement
 
-        private static string ProcessString(string start, Amazon.DeviceFarm.Model.Job job)
+        public static string ProcessString(string start, Amazon.DeviceFarm.Model.Job job)
         {
             var output = new StringBuilder();
 
             bool wasBracket = false;
             var insideBracketCharacters = new StringBuilder();
-            foreach( var c in start )
+            foreach (var c in start)
             {
-                if( wasBracket )
+                if (wasBracket)
                 {
-                    if( c == '{')
+                    if (c == '{')
                     {
-                        if(insideBracketCharacters.Length == 0)
+                        if (insideBracketCharacters.Length == 0)
                         {
                             wasBracket = false;
                             output.Append('{');
-                            break;
+                            continue;
                         }
                         else
                         {
                             throw new System.InvalidOperationException("'{' found in middle of existing bracket");
                         }
                     }
-                    if( c == '}')
+                    if (c == '}')
                     {
                         // Time to do the magic...
                         var str = insideBracketCharacters.ToString();
@@ -584,7 +610,7 @@ Others:
                             throw new System.InvalidOperationException($"Don't know how to handle root property '{splitStr[0]}'");
 
                         object obj = job;
-                        for( int i = 1; i < splitStr.Length; i++ )
+                        for (int i = 1; i < splitStr.Length; i++)
                         {
                             if (obj == null)
                                 continue;
@@ -606,17 +632,17 @@ Others:
                 }
                 else
                 {
-                    if( c == '{')
+                    if (c == '{')
                     {
                         wasBracket = true;
-                        insideBracketCharacters = new StringBuilder();;
+                        insideBracketCharacters = new StringBuilder(); ;
                     }
                     else
                         output.Append(c);
                 }
             }
 
-            if( wasBracket)
+            if (wasBracket)
                 throw new System.InvalidOperationException("Unclosed { found");
 
             var outputStr = output.ToString();
